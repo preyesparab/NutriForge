@@ -1,78 +1,101 @@
-# 🏋️ AI Gym Trainer — PoseNutri
+# 🏋️‍♂️ NutriForge
 
-An AI-powered gym trainer platform with real-time pose estimation, food recognition, and personalised fitness plans.
+![NutriForge Banner](https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1200&h=400&fit=crop&q=80)
 
-## Monorepo Structure
+**NutriForge** is a next-generation, AI-powered gym trainer platform. It leverages advanced machine learning models for real-time pose estimation and food recognition, coupled with a robust full-stack ecosystem to track your workouts, manage your nutrition, and provide personalized fitness plans.
 
-```
-pose_nutri/
-├── client/          # React (Vite) — User Dashboard
-├── server/          # Node.js + Express — MERN API
-├── ai_service/      # Python FastAPI — ML Microservice
+---
+
+## Key Features
+
+- 📸 **AI Nutrition Scanner:** Upload a photo of your meal and our YOLOv8 vision model automatically segments ingredients and fetches lab-tested USDA macro-nutritional values.
+-  **Real-time Pose Tracking:** Uses Google's MediaPipe via your webcam to track your exercise form and count repetitions in real time.
+-  **AI Protocol Generator:** Input your weight, goals, and dietary preferences to generate a highly-personalized 7-day workout split and 5-meal diet plan using Gemini 2.5 Flash.
+-  **Integrated Shop:** An e-commerce module for purchasing fitness gear and supplements.
+- **Dynamic Dashboard:** Track your daily calorie intake, workout volume, and progress through interactive charts.
+
+---
+
+## 🛠️ Technology Stack
+
+This application is built using a microservices-inspired Monorepo architecture:
+
+**Frontend (Client)**
+- React 18 & Vite
+- Tailwind CSS (Glassmorphism design system)
+- Zustand (State Management)
+- Framer Motion (Animations)
+- Chart.js & Recharts
+
+**Backend (Server)**
+- Node.js & Express.js
+- MongoDB & Mongoose
+- JSON Web Tokens (JWT) & bcryptjs
+- Google Generative AI (Gemini)
+
+**AI Microservice**
+- Python 3 & FastAPI
+- PyTorch & Ultralytics (YOLOv8)
+- MediaPipe (Pose Estimation)
+- OpenCV
+
+---
+
+## 📁 Monorepo Structure
+
+```text
+NutriForge/
+├── client/          # React (Vite) User Dashboard & UI
+├── server/          # Node.js + Express MERN API
+├── ai_service/      # Python FastAPI ML Microservice
 └── docker-compose.yml
 ```
+> For a detailed, file-by-file breakdown of the architecture, see the [`PROJECT_STRUCTURE.md`](./PROJECT_STRUCTURE.md).
 
-## Quick Start
+---
 
-### 1. Server (Node/Express)
+## Quick Start Guide
+
+You will need three separate terminal windows to run all microservices locally.
+
+### 1. Configure Environment Variables
+Copy the `.env.example` file in each directory to `.env` and fill in your credentials.
+- `server/.env` requires a MongoDB URI and a Gemini API Key.
+- `client/.env` requires the API URLs.
+- `ai_service/.env` requires the YOLO model path.
+> See the root `.env.example` file for a master guide of all required variables.
+
+### 2. Start the Backend Server (Node.js)
 ```bash
-cd server && npm install && npm run dev
+cd server
+npm install
+npm run dev
 ```
+*Runs on `http://localhost:5000`*
 
-### 2. Client (React/Vite)
-```bash
-cd client && npm install && npm run dev
-```
-
-### 3. AI Service (Python FastAPI)
+### 3. Start the AI Microservice (Python)
 ```bash
 cd ai_service
 python -m venv venv
-venv\Scripts\activate          # Windows
+venv\Scripts\activate      # Windows
+# source venv/bin/activate # Mac/Linux
 pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 ```
+*Runs on `http://localhost:8000`*
 
+### 4. Start the Frontend Client (React)
+```bash
+cd client
+npm install
+npm run dev
+```
+*Runs on `http://localhost:3000`*
 
+---
 
+##  Contributing
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](../../issues).
 
-### 🎨 Brand Design System & UI Specifications
-
-**1. Core Colors & Theming**
-- **Base Background:** Deep Slate/Dark Background (`#020617` / `slate-950`) or Black (`#0a0a0c`).
-- **Primary Text:** Light Slate (`#f1f5f9`).
-- **Blue Accent Theme (Active):** 
-  - Blue (`#2563eb`)
-  - Blue-Light (`#3b82f6`)
-  - Cyan (`#22d3ee`)
-  - Blue Glow (`rgba(37,99,235,0.35)`)
-- **Orange Accent Theme (Secondary/Legacy):**
-  - Orange (`#F97316`)
-  - Orange-Light (`#FB923C`)
-  - Orange-Dark (`#EA580C`)
-
-**2. Typography Structure**
-- **Headings (h1, h2, h3, .headline):** `'Oswald', 'Poppins', sans-serif`. Use for bold, impactful titles.
-- **Body Text:** `'Poppins', 'Inter', system-ui, sans-serif`. Use for legibility on dark modes.
-
-**3. Surface Styles & Glassmorphism**
-- **Glass Panels (`.glass` class):**
-  - Background: `rgba(30,41,59,0.45)` (Frosted Slate)
-  - Blur: `backdrop-filter: blur(24px)`
-  - Border: `1px solid rgba(51,65,85,0.6)`
-  - Border Radius: `20px`
-- **Stat Bubbles (`.stat-bubble` class):**
-  - Background: `rgba(30,41,59,0.55)`
-  - Blur: `backdrop-filter: blur(20px)`
-  - Border: `1px solid rgba(51,65,85,0.65)`
-  - Border Radius: `16px`
-
-**4. Effects, Glows, and Gradients**
-- **Subtle Texture:** The app uses a fixed subtle noise/grain SVG background texture layer (`opacity: 0.35`).
-- **Blue Glow Elements (`.glow-blue` class):** `box-shadow: 0 0 30px rgba(37,99,235,0.35), 0 8px 32px rgba(0,0,0,0.5)`
-- **Small Blue Glow (`.glow-blue-sm` class):** `box-shadow: 0 0 14px rgba(37,99,235,0.45)`
-- **Blue Text Gradient (`.text-gradient-blue` class):** `linear-gradient(135deg, #22d3ee 0%, #3b82f6 100%)`
-- **White Fade Text Gradient (`.text-gradient-white` class):** `linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.6) 100%)`
-
-**5. Micro-Animations**
-- **Pulse Ring (`.ring-glow` class):** A slow, infinite pulsating effect with a 3-second ease-in-out cycle. Scales up to 1.04x size and fades opacity.
+## 📝 License
+This project is open-source and available under the [MIT License](LICENSE).
