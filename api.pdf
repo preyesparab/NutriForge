@@ -1,0 +1,23 @@
+API key : AIzaSyBVQAaCgvqnLl6wKIWrlL0iLZOMHIIaWPQ
+Name : Gemini API Key
+Project Name : projects/211479361368
+Project Number : 211479361368
+
+
+
+Create a Python virtual environment:
+
+cmd
+python -m venv venv
+Activate the virtual environment:
+
+cmd
+.\venv\Scripts\activate
+Install the dependencies:
+
+cmd
+pip install -r requirements.txt
+Start the FastAPI server:
+
+cmd
+uvicorn main:app --reload --port 8000 --host 0.0.0.0

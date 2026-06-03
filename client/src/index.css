@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --blue:       #2563eb;
+    --blue-light: #3b82f6;
+    --cyan:       #22d3ee;
+    --blue-glow:  rgba(37,99,235,0.35);
+    --base:       #020617;   /* slate-950 */
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    @apply antialiased;
+    background-color: var(--base);
+    color: #f1f5f9;
+    font-family: 'Poppins', system-ui, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .headline {
+    font-family: 'Oswald', 'Poppins', sans-serif;
+  }
+
+  /* Subtle noise grain texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.35;
+  }
+
+  #root {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+@layer utilities {
+  /* Glass panels — slate-800/40 frosted */
+  .glass {
+    background: rgba(30,41,59,0.45);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(51,65,85,0.6);
+    border-radius: 20px;
+  }
+
+  /* Blue accent glow */
+  .glow-blue {
+    box-shadow: 0 0 30px var(--blue-glow), 0 8px 32px rgba(0,0,0,0.5);
+  }
+  .glow-blue-sm {
+    box-shadow: 0 0 14px rgba(37,99,235,0.45);
+  }
+
+  /* Text gradients — cyan → blue */
+  .text-gradient-blue {
+    background: linear-gradient(135deg, #22d3ee 0%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .text-gradient-white {
+    background: linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.6) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Pulse ring (now blue) */
+  .ring-glow {
+    position: absolute;
+    border-radius: 9999px;
+    border: 1px solid rgba(37,99,235,0.25);
+    pointer-events: none;
+    animation: pulse-ring 3s ease-in-out infinite;
+  }
+  @keyframes pulse-ring {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50%       { opacity: 1;   transform: scale(1.04); }
+  }
+
+  /* Stat bubble — glass slate style */
+  .stat-bubble {
+    background: rgba(30,41,59,0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(51,65,85,0.65);
+    border-radius: 16px;
+  }
+}
