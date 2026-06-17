@@ -8,6 +8,8 @@ import UploadZone from "../components/NutritionScanner/UploadZone";
 import ScanResult from "../components/NutritionScanner/ScanResult";
 import useAuthStore from "../store/useAuthStore";
 
+const API_URL = import.meta.env.VITE_API_BASE_URL;
+
 // ── Hero ──────────────────────────────────────────────────────────────────────
 function HeroSection() {
   const staggerContainer = {
@@ -224,7 +226,7 @@ export default function NutritionScannerPage() {
     formData.append("image", file);
 
     try {
-      const res = await axios.post("/api/nutrition/analyze", formData, {
+      const res = await axios.post(`${API_URL}/nutrition/analyze`, formData, {
         headers: {
           "Content-Type":  "multipart/form-data",
           Authorization:   `Bearer ${token}`,
