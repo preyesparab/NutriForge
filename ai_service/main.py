@@ -12,9 +12,20 @@ app = FastAPI(
     version="1.0.0",
 )
 
+import os
+
+ALLOWED_ORIGINS = os.getenv(
+    "ALLOWED_ORIGINS",
+    "https://nutriforge-backend.onrender.com,https://nutriforge-ai.onrender.com"
+).split(",")
+
+# Always allow any *.vercel.app preview URL
+ALLOWED_ORIGINS_REGEX = [r"https://.*\.vercel\.app"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # tighten in production
+    allow_origins=ALLOWED_ORIGINS,
+    allow_origin_regex="|".join(ALLOWED_ORIGINS_REGEX),
     allow_methods=["*"],
     allow_headers=["*"],
 )

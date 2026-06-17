@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import toast                   from "react-hot-toast";
 import useAuthStore            from "../store/useAuthStore";
 
+const API_URL = import.meta.env.VITE_API_BASE_URL;
+
 // ── Form options ─────────────────────────────────────────────────────────────
 const GOALS = [
   "Lose Fat",
@@ -151,7 +153,7 @@ export default function AIPlans() {
     setPlan(null);
     try {
       const { data } = await axios.post(
-        "/api/ai/generate-plan",
+        `${API_URL}/ai/generate-plan`,
         { ...form, weight: Number(form.weight) },
         authHeaders()
       );
