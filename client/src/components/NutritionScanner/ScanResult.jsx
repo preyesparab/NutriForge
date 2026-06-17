@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 import { RefreshCw, Bookmark, CheckCircle2, Dumbbell, Droplets, Leaf } from "lucide-react";
 import useAuthStore from "../../store/useAuthStore";
 
+const API_URL = import.meta.env.VITE_API_BASE_URL;
+
 /* ─────────────────────────────────────────────────────────────────────────────
    Design language: clean commercial dark-mode (think Linear / Vercel / Health)
    - ONE accent color: blue #2563eb
@@ -105,7 +107,7 @@ export default function ScanResult({
     setSaving(true);
     try {
       await axios.post(
-        "/api/nutrition/log",
+        `${API_URL}/nutrition/log`,
         { scanId, mealType, detectedFoods, totals },
         { headers: { Authorization: `Bearer ${token}` } }
       );

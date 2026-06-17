@@ -15,6 +15,8 @@ import {
 import PageTransition from "../components/PageTransition";
 import useAuthStore from "../store/useAuthStore";
 
+const API_URL = import.meta.env.VITE_API_BASE_URL;
+
 /* ─── Design tokens ───────────────────────────────────────────────────────── */
 const GLASS = {
   background: "rgba(30,41,59,0.45)",
@@ -122,16 +124,16 @@ function CalorieDonut({ consumed, goal, size = 160 }) {
 
 /* ─── Meal section constants ──────────────────────────────────────────────── */
 const MEAL_META = {
-  breakfast: { label: "Breakfast", Icon: Coffee,  color: "#f97316" },
-  lunch:     { label: "Lunch",     Icon: Sun,     color: "#22d3ee" },
-  dinner:    { label: "Dinner",    Icon: Moon,    color: "#a78bfa" },
-  snack:     { label: "Snacks",    Icon: Apple,   color: "#3b82f6" },
+  breakfast: { label: "Breakfast", Icon: Coffee, color: "#f97316" },
+  lunch: { label: "Lunch", Icon: Sun, color: "#22d3ee" },
+  dinner: { label: "Dinner", Icon: Moon, color: "#a78bfa" },
+  snack: { label: "Snacks", Icon: Apple, color: "#3b82f6" },
 };
 
 const MACRO_META = [
   { key: "protein", label: "Protein", color: "#22d3ee", goal: 150 },
-  { key: "carbs",   label: "Carbs",   color: "#a78bfa", goal: 250 },
-  { key: "fat",     label: "Fat",     color: "#f97316", goal: 65  },
+  { key: "carbs", label: "Carbs", color: "#a78bfa", goal: 250 },
+  { key: "fat", label: "Fat", color: "#f97316", goal: 65 },
 ];
 
 const CALORIE_GOAL = 2200;
@@ -140,26 +142,26 @@ const WORKOUT_TYPE_COLOR = { PUSH: "#3b82f6", PULL: "#22d3ee", LEGS: "#a78bfa", 
 /* ═══════════════════════════════════════════════════════════════════════════ */
 export default function Dashboard() {
   const { token, user } = useAuthStore();
-  const navigate        = useNavigate();
+  const navigate = useNavigate();
 
   /* ── data state ─────────────────────────────────────────────────────────── */
-  const [stats,         setStats]         = useState({ totalCalories: 0, totalMinutes: 0, totalVolume: 0, totalWorkouts: 0 });
-  const [chartData,     setChartData]     = useState([]);
-  const [goals,         setGoals]         = useState({ workoutsCompletedThisWeek: 0, weeklyTarget: 4 });
-  const [recentWk,      setRecentWk]      = useState([]);
+  const [stats, setStats] = useState({ totalCalories: 0, totalMinutes: 0, totalVolume: 0, totalWorkouts: 0 });
+  const [chartData, setChartData] = useState([]);
+  const [goals, setGoals] = useState({ workoutsCompletedThisWeek: 0, weeklyTarget: 4 });
+  const [recentWk, setRecentWk] = useState([]);
   const [nutritionLogs, setNutritionLogs] = useState([]);
-  const [chartPeriod,   setChartPeriod]   = useState("7D");
+  const [chartPeriod, setChartPeriod] = useState("7D");
   const [expandedMeals, setExpandedMeals] = useState({ breakfast: true, lunch: true, dinner: false, snack: false });
-  const [loading,       setLoading]       = useState(true);
+  const [loading, setLoading] = useState(true);
 
   /* ── fetch ──────────────────────────────────────────────────────────────── */
   useEffect(() => {
     if (!token) return;
     const h = { headers: { Authorization: `Bearer ${token}` } };
     Promise.all([
-      axios.get("/api/analytics/dashboard", h),
-      axios.get("/api/workouts/recent", h),
-      axios.get("/api/nutrition/log?limit=30", h),
+      axios.get(`${API_URL}/analytics/dashboard`, h),
+      axios.get(`${API_URL}/workouts/recent`, h),
+      axios.get(`${API_URL}/nutrition/log?limit=30`, h),
     ]).then(([dash, wk, nutr]) => {
       const d = dash.data.data;
       setStats(d.stats || {});
@@ -172,15 +174,15 @@ export default function Dashboard() {
   }, [token]);
 
   /* ── derived nutrition ──────────────────────────────────────────────────── */
-  const todayStr  = new Date().toISOString().slice(0, 10);
+  const todayStr = new Date().toISOString().slice(0, 10);
   const todayLogs = nutritionLogs.filter(s =>
     s.scannedAt?.slice(0, 10) === todayStr || s.createdAt?.slice(0, 10) === todayStr
   );
 
   const totalConsumed = todayLogs.reduce((a, s) => a + (s.totals?.calories || 0), 0);
-  const totalProtein  = todayLogs.reduce((a, s) => a + (s.totals?.protein  || 0), 0);
-  const totalCarbs    = todayLogs.reduce((a, s) => a + (s.totals?.carbs    || 0), 0);
-  const totalFat      = todayLogs.reduce((a, s) => a + (s.totals?.fat      || 0), 0);
+  const totalProtein = todayLogs.reduce((a, s) => a + (s.totals?.protein || 0), 0);
+  const totalCarbs = todayLogs.reduce((a, s) => a + (s.totals?.carbs || 0), 0);
+  const totalFat = todayLogs.reduce((a, s) => a + (s.totals?.fat || 0), 0);
 
   /* group by mealType */
   const groupedMeals = todayLogs.reduce((acc, scan) => {
@@ -192,7 +194,7 @@ export default function Dashboard() {
 
   /* streak: count consecutive days with a workout */
   const streak = (() => {
-    const today  = new Date(); today.setHours(0, 0, 0, 0);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
     let count = 0, d = new Date(today);
     const wkDates = new Set(recentWk.map(w => new Date(w.date).toISOString().slice(0, 10)));
     while (wkDates.has(d.toISOString().slice(0, 10))) { count++; d.setDate(d.getDate() - 1); }
@@ -265,10 +267,10 @@ export default function Dashboard() {
         {/* ── ROW 2: Stat Cards ─────────────────────────────────────────────── */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
           {[
-            { icon: <Flame className="w-4 h-4" strokeWidth={1.5} />,     label: "Calories Burned", value: stats.totalCalories || 0, color: "#f97316", sub: "+12% from yesterday", subIcon: <TrendingUp className="w-3 h-3" strokeWidth={1.5} />, subColor: "#22d3ee" },
-            { icon: <Timer className="w-4 h-4" strokeWidth={1.5} />,     label: "Workout Minutes", value: stats.totalMinutes   || 0, color: "#3b82f6", sub: "Active minutes today", subColor: "#64748b" },
-            { icon: <BarChart3 className="w-4 h-4" strokeWidth={1.5} />, label: "Volume (kg)",      value: stats.totalVolume   || 0, color: "#22d3ee", sub: "Total weight lifted",  subColor: "#64748b" },
-            { icon: <Activity className="w-4 h-4" strokeWidth={1.5} />,  label: "Sessions",         value: stats.totalWorkouts || 0, color: "#a78bfa", sub: `${goals.workoutsCompletedThisWeek} of ${goals.weeklyTarget} this week`, subColor: "#64748b" },
+            { icon: <Flame className="w-4 h-4" strokeWidth={1.5} />, label: "Calories Burned", value: stats.totalCalories || 0, color: "#f97316", sub: "+12% from yesterday", subIcon: <TrendingUp className="w-3 h-3" strokeWidth={1.5} />, subColor: "#22d3ee" },
+            { icon: <Timer className="w-4 h-4" strokeWidth={1.5} />, label: "Workout Minutes", value: stats.totalMinutes || 0, color: "#3b82f6", sub: "Active minutes today", subColor: "#64748b" },
+            { icon: <BarChart3 className="w-4 h-4" strokeWidth={1.5} />, label: "Volume (kg)", value: stats.totalVolume || 0, color: "#22d3ee", sub: "Total weight lifted", subColor: "#64748b" },
+            { icon: <Activity className="w-4 h-4" strokeWidth={1.5} />, label: "Sessions", value: stats.totalWorkouts || 0, color: "#a78bfa", sub: `${goals.workoutsCompletedThisWeek} of ${goals.weeklyTarget} this week`, subColor: "#64748b" },
           ].map((c, i) => (
             <motion.div key={c.label} {...cardAnim(1 + i)}
               style={GLASS}
@@ -330,8 +332,8 @@ export default function Dashboard() {
                 <AreaChart data={chartData} margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
                   <defs>
                     <linearGradient id="volGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%"   stopColor="#3b82f6" stopOpacity={0.3} />
-                      <stop offset="100%" stopColor="#3b82f6" stopOpacity={0}   />
+                      <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.3} />
+                      <stop offset="100%" stopColor="#3b82f6" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(51,65,85,0.3)" vertical={false} />
@@ -367,9 +369,9 @@ export default function Dashboard() {
                         <stop offset="0%" stopColor="#3b82f6" /><stop offset="100%" stopColor="#22d3ee" />
                       </linearGradient>
                     </defs>
-                    <circle cx={sz/2} cy={sz/2} r={r} fill="transparent"
+                    <circle cx={sz / 2} cy={sz / 2} r={r} fill="transparent"
                       stroke="rgba(51,65,85,0.5)" strokeWidth={sw} />
-                    <circle cx={sz/2} cy={sz/2} r={r} fill="transparent"
+                    <circle cx={sz / 2} cy={sz / 2} r={r} fill="transparent"
                       stroke="url(#ringGrad)" strokeWidth={sw} strokeLinecap="round"
                       strokeDasharray={circ} strokeDashoffset={off}
                       style={{ transition: "stroke-dashoffset 1.2s ease-out" }} />
@@ -474,8 +476,8 @@ export default function Dashboard() {
 
             <div className="flex-1 space-y-2 overflow-y-auto" style={{ maxHeight: "340px" }}>
               {Object.keys(MEAL_META).map((mealKey) => {
-                const meta   = MEAL_META[mealKey];
-                const items  = groupedMeals[mealKey] || [];
+                const meta = MEAL_META[mealKey];
+                const items = groupedMeals[mealKey] || [];
                 const mealCal = items.reduce((a, s) => a + (s.totals?.calories || 0), 0);
                 const isOpen = expandedMeals[mealKey];
 
@@ -530,7 +532,7 @@ export default function Dashboard() {
                               const name = (scan.detectedFoods?.[0]?.display_name ||
                                 scan.detectedFoods?.[0]?.displayName ||
                                 scan.detectedFoods?.[0]?.name || "Meal").split(",")[0].trim();
-                              const cal  = Math.round(scan.totals?.calories || 0);
+                              const cal = Math.round(scan.totals?.calories || 0);
                               const time = new Date(scan.scannedAt || scan.createdAt).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
                               const imgQ = encodeURIComponent(name.split(" ")[0]);
 
@@ -632,11 +634,11 @@ export default function Dashboard() {
             <div className="flex gap-4 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
               {recentWk.map((wk, i) => {
                 const types = ["PUSH", "PULL", "LEGS", "FULL BODY"];
-                const type  = types[i % types.length];
-                const vol   = wk.exercises?.reduce((a, ex) =>
+                const type = types[i % types.length];
+                const vol = wk.exercises?.reduce((a, ex) =>
                   a + (ex.sets?.reduce((b, s) => b + (s.isCompleted ? (s.weight || 0) * (s.reps || 0) : 0), 0) || 0), 0) || 0;
-                const sets  = wk.exercises?.reduce((a, ex) => a + (ex.sets?.length || 0), 0) || 0;
-                const pct   = Math.min(((wk.durationMinutes || 0) / 60) * 100, 100);
+                const sets = wk.exercises?.reduce((a, ex) => a + (ex.sets?.length || 0), 0) || 0;
+                const pct = Math.min(((wk.durationMinutes || 0) / 60) * 100, 100);
                 const tColor = WORKOUT_TYPE_COLOR[type] || "#3b82f6";
 
                 return (
@@ -666,7 +668,7 @@ export default function Dashboard() {
                     <div className="flex items-center gap-3 mt-3">
                       {[
                         { Icon: Clock, val: `${wk.durationMinutes || 0}m` },
-                        { Icon: Zap,   val: `${Math.round(vol)}kg` },
+                        { Icon: Zap, val: `${Math.round(vol)}kg` },
                         { Icon: Repeat, val: `${sets} sets` },
                       ].map(({ Icon, val }) => (
                         <span key={val} className="flex items-center gap-1 text-[11px] text-slate-500"

@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import useAuthStore from "../store/useAuthStore";
 import PageTransition from "../components/PageTransition";
+
+const API_URL = import.meta.env.VITE_API_BASE_URL;
 import {
   Dumbbell, Activity, ArrowDownUp, Heart, Plus, Minus,
   Check, CheckCircle2, Trash2, X, Pencil, StickyNote,
@@ -214,7 +216,7 @@ export default function TrackWorkout() {
       if (!window.confirm("Some sets aren't marked complete. Finish anyway?")) return;
     }
     try {
-      await axios.post("/api/workouts", {
+      await axios.post(`${API_URL}/workouts`, {
         title:           workout.title,
         startTime:       startTime || Date.now(),
         durationMinutes: Math.max(1, Math.floor(elapsedSecs / 60)),
