@@ -24,6 +24,10 @@ app.include_router(pose.router, prefix="/pose",      tags=["Pose Estimation"])
 app.include_router(food.router, prefix="/food",      tags=["Food Recognition"])
 app.include_router(plan.router, prefix="/plan",      tags=["Plan Generation"])
 
+@app.get("/")
+def root():
+    return {"status": "ok", "service": "NutriForge AI"}
+
 @app.get("/health", tags=["Health"])
 def health():
     return {"status": "ok", "service": "pose-nutri-ai"}
