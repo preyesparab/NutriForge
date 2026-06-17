@@ -1,13 +1,13 @@
 require("dotenv").config();
 require("express-async-errors");
 
-const express  = require("express");
-const cors     = require("cors");
-const morgan   = require("morgan");
-const path     = require("path");
+const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
+const path = require("path");
 
 const connectDB = require("./config/db");
-const app       = express();
+const app = express();
 
 // ── Core middleware ────────────────────────────────────────────────────────────
 const allowedOrigins = [
@@ -36,16 +36,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // ── API Routes ─────────────────────────────────────────────────────────────────
-app.use("/api/auth",      require("./routes/auth.routes"));
-app.use("/api/users",     require("./routes/user.routes"));
-app.use("/api/products",  require("./routes/product.routes"));
-app.use("/api/cart",      require("./routes/cart.routes"));
-app.use("/api/orders",    require("./routes/order.routes"));
-app.use("/api/workouts",  require("./routes/workout.routes"));
+app.use("/api/auth", require("./routes/auth.routes"));
+app.use("/api/users", require("./routes/user.routes"));
+app.use("/api/products", require("./routes/product.routes"));
+app.use("/api/cart", require("./routes/cart.routes"));
+app.use("/api/orders", require("./routes/order.routes"));
+app.use("/api/workouts", require("./routes/workout.routes"));
 app.use("/api/nutrition", require("./routes/nutrition.routes"));
-app.use("/api/plans",     require("./routes/plan.routes"));
+app.use("/api/plans", require("./routes/plan.routes"));
 app.use("/api/analytics", require("./routes/analyticsRoutes"));
-app.use("/api/ai",        require("./routes/aiRoutes"));
+app.use("/api/ai", require("./routes/aiRoutes"));
 
 // ── Health check ───────────────────────────────────────────────────────────────
 app.get("/health", (_req, res) =>
