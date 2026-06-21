@@ -71,6 +71,7 @@ ENV/
 
 # Ignore heavy ML model weights
 ai_service/models/*.pt
+!ai_service/models/food_yolov8n.pt
 ai_service/models/*.pth
 ai_service/models/*.weights
 ai_service/models/*.onnx
