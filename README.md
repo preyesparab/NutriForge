@@ -54,7 +54,7 @@ NutriForge/
 
 ---
 
-## Quick Start Guide
+## Quick Start Guide  
 
 You will need three separate terminal windows to run all microservices locally.
 
@@ -99,3 +99,6 @@ Contributions, issues, and feature requests are welcome! Feel free to check the 
 
 ## 📝 License
 This project is open-source and available under the [MIT License](LICENSE).
+
+
+Implemented an in-memory caching layer using node-cache on the product listing endpoint (GET /api/products) to reduce redundant database queries for data that doesn't change on every request. The cache stores the full product list with a 60-second time-to-live (TTL); repeated requests within that window are served directly from memory instead of querying MongoDB, while the cache transparently refreshes from the database once the TTL expires. The implementation preserves the existing response shape and error handling, requiring no changes to the frontend or any other backend routes.
